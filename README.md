@@ -33,7 +33,7 @@ npm start
 | GET | /books | Get all books |
 | GET | /books/:id | Get one book |
 | POST | /books | Create book |
-| PATCH | /books/:id | Update book |
+| PUT | /books/:id | Update book |
 | DELETE | /books/:id | Delete book |
 | PATCH | /books/:id/borrow | Borrow book |
 | PATCH | /books/:id/return | Return book |
