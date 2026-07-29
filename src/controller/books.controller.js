@@ -1,11 +1,4 @@
 import books from "../data/data.js";
-  getAllBooks,
-  getBookById,
-  createBook,
-  updateBook,
-  deleteBook,
-  borrowBook,
-  returnBook
 
 function getAllBooks(req,res){
     res.status(200).json({
