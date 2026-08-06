@@ -24,10 +24,9 @@ const bookSchema = new Schema({
     status :{
         type :Boolean,
         default :true,
-        required :true
     }
 });
 
-const Book = model("Book",bookSchema);
+const Books = model("Book",bookSchema);
 
-export {Book}
+export {Books}
