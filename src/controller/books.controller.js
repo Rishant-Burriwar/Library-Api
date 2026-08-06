@@ -1,34 +1,37 @@
-import books from "../data/data.js";
+import { Books } from "../models/booksModel.js";
 
-function getAllBooks(req,res){
+async function getAllBooks(req,res){
+    let bookdata = await Books.find();
+    if(bookdata.length === 0){
+        throw new Error("Book Data is Empty");
+    }
+    res.json({
+        success :true,
+        message : "Books Fetched Successfully",
+        data :bookdata
+    })
+}
+
+async function getBookById(req,res){
+    let BookId = Number(req.params.id);
+    const bookdata = await Books.findOne({book_id:BookId})
+    if(!bookdata){
+        throw new Error("Book not found");
+    }
     res.status(200).json({
-        message:"Fetched successfully",
-        books
+        success:true,
+        message:"Book fetched",
+        data:bookdata
     });
 }
 
-function getBookById(req,res){
-    let BookId = Number(req.params.id);
-    let result = books.find((obj)=>obj.id===BookId)
-    if(result===undefined){
-        return res.status(404).json({
-            message:"Books not found"
-        });
-    }
-    else{
-        res.status(200).json({
-            message:"Book found",
-            result
-        });
-    }
-}
-
-function createBook(req,res){
-    const bookObj = {id:books.length+1,available:true,...req.body}
-    books.push(bookObj)
+async function createBook(req,res){
+    const bookdata = req.body;
+    await Books.create(bookdata);
     res.status(201).json({
+        success:true,
         message:"Book created",
-        bookObj
+        data:bookdata
     });
 }
 
