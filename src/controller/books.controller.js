@@ -68,7 +68,11 @@ async function deleteBook(req,res){
 async function borrowBook(req,res){
     const modifyData = req.body;
     const id = Number(req.params.id);
-    const response = await Books.findOne({book_id : id});
+    const response = await Books.findOneAndUpdate(
+        {book_id : id},
+        {$set:{...modifyData}},
+        {returnDocument : "after",runValidators:true}
+    );
     if (response === null){
         throw new Error("Book not found");
     }
@@ -82,27 +86,29 @@ async function borrowBook(req,res){
             data:response
         })
     }
-    
 }
 
-function returnBook(req,res){
+async function returnBook(req,res){
     let BookId = Number(req.params.id);
-    let bookIndex = books.findIndex((obj)=>obj.id===BookId)
-    if(bookIndex===-1){
-        return res.status(400).json({
-            message:"Books not found"
+    const modify = req.body
+    const response = await Books.findOneAndUpdate(
+        {book_id:BookId},
+        {$set:{...modify}},
+        {returnDocument:true,runValidators:true}
+    )
+    if(response === null){
+        throw new Error("Book not found");
+    }
+    else if(response.status === true){
+        throw new Error("Book already present in library")
+    }
+    else{
+        res.status(200).json({
+            success:true,
+            message:"Book returned",
+            data:response
         });
     }
-    if(books[bookIndex].available === true){
-        return res.status(400).json({
-            message : "Book already returned"
-        });
-    }
-    books[bookIndex].available =true
-    res.status(200).json({
-        message :"Book returned successfully",
-        bookObj : books[bookIndex]
-    });
 }
 
 export {
